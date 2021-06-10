@@ -9,14 +9,21 @@ class FirebaseService {
   Future<void> addUser() async {
     var information = HashMap<String, dynamic>();
 
-    information["user_name"] = "Murad";
-    information["user_age"] = 45;
+    information["user_name"] = "Demo";
+    information["user_age"] = 43;
 
     refUsers.push().set(information);
+
   }
 
   Future<void> deleteUser() async {
     refUsers.child("-Mbm3fUb-sMWEjJsGpLo").remove();
+  }
+
+  Future <Users?> getUsers() async {
+
+    return allUser();
+
   }
 
   Future<void> updateUser() async {
@@ -28,7 +35,7 @@ class FirebaseService {
     refUsers.child("-Mbm3o-fZwktbypEA7R4").update(updateInformation);
   }
 
-  Future<void> allUser() async {
+  Future<Users?> allUser() async {
     refUsers.onValue.listen((event) {
       var values = event.snapshot.value;
 
