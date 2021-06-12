@@ -1,7 +1,10 @@
-class Categories{
+class Categories {
+  String category_id;
+  String category_name;
 
-  int categoriy_id;
-  String categoriy_name;
+  Categories(this.category_id, this.category_name);
 
-  Categories(this.categoriy_id, this.categoriy_name);
+  factory Categories.fromJson(String key, Map<dynamic, dynamic> json) {
+    return Categories(key, json["category_name"] as String);
+  }
 }

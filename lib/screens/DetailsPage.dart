@@ -26,7 +26,8 @@ class _DetailsPageState extends State<DetailsPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Image.asset("assets/images/${widget.film!.film_photo}"),
+            Image.network(
+                "http://kasimadalan.pe.hu/filmler/resimler/${widget.film!.film_photo}"),
             Text(
               widget.film!.film_year.toString(),
               style: TextStyle(
@@ -35,7 +36,7 @@ class _DetailsPageState extends State<DetailsPage> {
                   color: Colors.black),
             ),
             Text(
-              widget.film!.director.director_name,
+              widget.film!.director_name,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 30,

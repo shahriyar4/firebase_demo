@@ -1,54 +1,43 @@
 import 'dart:collection';
 
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_demo/models/Users.dart';
 
-class FirebaseService {
-  var refUsers = FirebaseDatabase.instance.reference().child("users_table");
+class FireBaseService {
+  var refFilms = FirebaseDatabase.instance.reference().child("films_table");
 
-  Future<void> addUser() async {
-    var information = HashMap<String, dynamic>();
+  var refCategory =
+      FirebaseDatabase.instance.reference().child("category_table");
 
-    information["user_name"] = "Demo";
-    information["user_age"] = 43;
+  Future<void> addFilm() async {
+    var info = HashMap<String, dynamic>();
 
-    refUsers.push().set(information);
+    info["film_name"] = "Django";
 
+    refFilms.push().set(info);
   }
 
-  Future<void> deleteUser() async {
-    refUsers.child("-Mbm3fUb-sMWEjJsGpLo").remove();
+  Future<void> addCategory() async {
+    var info = HashMap<String, dynamic>();
+
+    info["category_name"] = "Dram";
+    info["category_id"] = "";
+
+    refCategory.push().set(info);
   }
 
-  Future <Users?> getUsers() async {
-
-    return allUser();
-
-  }
-
-  Future<void> updateUser() async {
+  Future<void> updateFilms() async {
     var updateInformation = HashMap<String, dynamic>();
 
-    updateInformation["user_name"] = "Shahriyar";
-    updateInformation["user_age"] = 18;
+    updateInformation["films_id"] = "";
 
-    refUsers.child("-Mbm3o-fZwktbypEA7R4").update(updateInformation);
+    refFilms.child("-Mc0QPZ28mzkS2JwV0cn").update(updateInformation);
   }
 
-  Future<Users?> allUser() async {
-    refUsers.onValue.listen((event) {
-      var values = event.snapshot.value;
+  Future<void> updateCategory() async {
+    var updateInformation = HashMap<String, dynamic>();
 
-      if (values != null) {
-        values.forEach((key, object) {
-          var user = Users.fromJson(object);
+    updateInformation["category_id"] = "";
 
-          print("******************");
-          print("kişi key : $key");
-          print("kişi ad : ${user.user_name}");
-          print("kişi yaş : ${user.user_age}");
-        });
-      }
-    });
+    refCategory.child("-Mc0R7lHDnrssGK0yX1m").update(updateInformation);
   }
 }

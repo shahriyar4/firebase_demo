@@ -1,8 +1,9 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_demo/firebase/FirebaseService.dart';
 import 'package:firebase_demo/models/Categories.dart';
 import 'package:firebase_demo/models/Users.dart';
-import 'package:firebase_demo/screens/DetailsPage.dart';
 import 'package:firebase_demo/screens/FilmsPage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -13,29 +14,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final firebaseService = FirebaseService();
+  final firebaseService = FireBaseService();
 
   late Future<Users?> futureUsers;
 
   @override
   void initState() {
     super.initState();
-    //firebaseService.allUser();
-    // firebaseService.addUser();
-    futureUsers = firebaseService.getUsers();
+    //firebaseService.addFilm();
+    //firebaseService.addCategory();
+    //firebaseService.updateFilms();
+    // firebaseService.updateCategory();
   }
 
-  Future<List<Categories>> allCategories() async {
-    var categoryList = <Categories>[];
-
-    var k1 = Categories(1, "Comedy");
-    var k2 = Categories(2, "Science Fiction");
-
-    categoryList.add(k1);
-    categoryList.add(k2);
-
-    return categoryList;
-  }
+  var refCategory =
+      FirebaseDatabase.instance.reference().child("category_table");
 
   @override
   Widget build(BuildContext context) {
@@ -48,16 +41,25 @@ class _HomePageState extends State<HomePage> {
         ),
         elevation: 0,
       ),
-      body: FutureBuilder<List<Categories>>(
-        future: allCategories(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            var categortList = snapshot.data;
+      body: StreamBuilder<Event>(
+        stream: refCategory.onValue,
+        builder: (context, event) {
+          if (event.hasData) {
+            var categoryList = <Categories>[];
+            var value = event.data!.snapshot.value;
+
+            if (value != null) {
+              value.forEach((key, object) {
+                var valueCategory = Categories.fromJson(key, object);
+
+                categoryList.add(valueCategory);
+              });
+            }
 
             return ListView.builder(
-              itemCount: categortList?.length,
+              itemCount: categoryList.length,
               itemBuilder: (context, index) {
-                var category = categortList?[index];
+                var category = categoryList[index];
 
                 return GestureDetector(
                   onTap: () {
@@ -73,8 +75,15 @@ class _HomePageState extends State<HomePage> {
                       height: 50,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Text("${category?.categoriy_name}",style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),)],
+                        children: [
+                          Text(
+                            "${category.category_name}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.black),
+                          )
+                        ],
                       ),
                     ),
                   ),
